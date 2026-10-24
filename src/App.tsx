@@ -16,22 +16,38 @@ const columns: Column[] = [
 ];
 
 export default function App() {
-  const { tasks, searchQuery, isModalOpen, addTask, setSearchQuery, setModalOpen } = useKanbanState();
-
-  const filteredTasks = tasks.filter(
-    (t) =>
-      t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      t.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  const {
+    filteredTasks,
+    allTags,
+    searchQuery,
+    selectedTags,
+    isModalOpen,
+    addTask,
+    moveTask,
+    setSearchQuery,
+    toggleTagFilter,
+    clearFilters,
+    setModalOpen,
+  } = useKanbanState();
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
       <FilterBar
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
+        availableTags={allTags}
+        selectedTags={selectedTags}
+        onToggleTag={toggleTagFilter}
+        onClearFilters={clearFilters}
         onNewTaskClick={() => setModalOpen(true)}
       />
-      <KanbanBoard columns={columns} tasks={filteredTasks} />
+      <main className="flex-1 overflow-hidden">
+        <KanbanBoard
+          columns={columns}
+          tasks={filteredTasks}
+          onDropTask={moveTask}
+        />
+      </main>
       <NewTaskModal
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}

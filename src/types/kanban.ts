@@ -17,11 +17,17 @@ export interface Column {
 export interface KanbanState {
   tasks: Task[];
   searchQuery: string;
+  selectedTags: string[];
   isModalOpen: boolean;
 }
 
 export interface KanbanActions {
   addTask: (task: Omit<Task, 'id' | 'createdAt'>) => void;
+  moveTask: (taskId: string, targetColumnId: ColumnId) => void;
+  deleteTask: (taskId: string) => void;
   setSearchQuery: (query: string) => void;
+  setSelectedTags: (tags: string[]) => void;
+  toggleTagFilter: (tag: string) => void;
+  clearFilters: () => void;
   setModalOpen: (isOpen: boolean) => void;
 }

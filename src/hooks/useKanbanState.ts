@@ -1,19 +1,33 @@
-import { useState } from 'react';
-import { Task, KanbanState, KanbanActions } from '../types/kanban';
+import { useSyncExternalStore, useMemo } from 'react';
+import { KanbanState, KanbanActions, Task } from '../types/kanban';
+import { stateManager } from '../utils/stateManager';
 
-export const useKanbanState = (): KanbanState & KanbanActions => {
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: '1', title: 'Task 1', description: 'Description 1', columnId: 'todo', tags: ['work'], createdAt: Date.now() },
-    { id: '2', title: 'Task 2', description: 'Description 2', columnId: 'doing', tags: ['urgent'], createdAt: Date.now() },
-    { id: '3', title: 'Task 3', description: 'Description 3', columnId: 'done', tags: ['finished'], createdAt: Date.now() }
-  ]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isModalOpen, setModalOpen] = useState(false);
+export interface UseKanbanStateReturn extends KanbanState, KanbanActions {
+  filteredTasks: Task[];
+  allTags: string[];
+}
 
-  const addTask = (task: Omit<Task, 'id' | 'createdAt'>) => {
-    const newTask: Task = { ...task, id: Math.random().toString(36).substr(2, 9), createdAt: Date.now() };
-    setTasks([...tasks, newTask]);
+export const useKanbanState = (): UseKanbanStateReturn => {
+  const state = useSyncExternalStore(
+    stateManager.subscribe,
+    stateManager.getState,
+    stateManager.getState
+  );
+
+  const filteredTasks = useMemo(() => stateManager.getFilteredTasks(), [state]);
+  const allTags = useMemo(() => stateManager.getAllTags(), [state.tasks]);
+
+  return {
+    ...state,
+    filteredTasks,
+    allTags,
+    addTask: stateManager.addTask,
+    moveTask: stateManager.moveTask,
+    deleteTask: stateManager.deleteTask,
+    setSearchQuery: stateManager.setSearchQuery,
+    setSelectedTags: stateManager.setSelectedTags,
+    toggleTagFilter: stateManager.toggleTagFilter,
+    clearFilters: stateManager.clearFilters,
+    setModalOpen: stateManager.setModalOpen,
   };
-
-  return { tasks, searchQuery, isModalOpen, addTask, setSearchQuery, setModalOpen };
 };
