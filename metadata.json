@@ -1,0 +1,6 @@
+{
+  "name": "Kanban Board App",
+  "description": "A clean, functional Kanban board application built with React, TypeScript, and Tailwind CSS.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
