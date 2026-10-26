@@ -1,4 +1,4 @@
-import { Search, Plus, X, Tag, RotateCcw } from 'lucide-react';
+import { Search, Plus, X, Tag, RotateCcw, Download } from 'lucide-react';
 
 interface FilterBarProps {
   searchQuery: string;
@@ -7,6 +7,7 @@ interface FilterBarProps {
   selectedTags?: string[];
   onToggleTag?: (tag: string) => void;
   onClearFilters?: () => void;
+  onExportCsvClick: () => void;
   onNewTaskClick: () => void;
 }
 
@@ -17,6 +18,7 @@ export function FilterBar({
   selectedTags = [],
   onToggleTag,
   onClearFilters,
+  onExportCsvClick,
   onNewTaskClick,
 }: FilterBarProps) {
   const hasActiveFilters = searchQuery.trim().length > 0 || selectedTags.length > 0;
@@ -25,7 +27,7 @@ export function FilterBar({
   return (
     <header className="bg-white border-b border-gray-200 p-4 shadow-xs">
       <div className="flex flex-col gap-3">
-        {/* Linha Principal: Busca, Limpar Filtros e Nova Tarefa */}
+        {/* Linha Principal: Busca, Limpar Filtros, Exportar CSV e Nova Tarefa */}
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-3 flex-1 min-w-[280px] max-w-lg">
             <div className="relative flex-1">
@@ -64,6 +66,16 @@ export function FilterBar({
 
           <div className="flex items-center gap-2">
             <button
+              type="button"
+              onClick={onExportCsvClick}
+              className="px-3.5 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-lg flex items-center gap-2 text-sm font-medium shadow-xs transition-colors cursor-pointer"
+            >
+              <Download className="w-4 h-4 text-gray-500" />
+              <span>Exportar CSV</span>
+            </button>
+
+            <button
+              type="button"
               onClick={onNewTaskClick}
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-2 text-sm font-medium shadow-sm transition-colors cursor-pointer"
             >
@@ -91,11 +103,10 @@ export function FilterBar({
                   key={tag}
                   type="button"
                   onClick={() => onToggleTag && onToggleTag(tag)}
-                  className={`px-2.5 py-1 rounded-full border text-xs font-medium transition-all cursor-pointer flex items-center gap-1 ${
-                    isSelected
+                  className={`px-2.5 py-1 rounded-full border text-xs font-medium transition-all cursor-pointer flex items-center gap-1 ${isSelected
                       ? 'bg-blue-600 border-blue-600 text-white shadow-xs'
                       : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100 hover:border-gray-300'
-                  }`}
+                    }`}
                 >
                   <span>#{tag}</span>
                   {isSelected && <X className="w-3 h-3 ml-0.5" />}

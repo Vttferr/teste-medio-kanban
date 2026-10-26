@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useState } from 'react';
 import { useKanbanState } from './hooks/useKanbanState';
 import { FilterBar } from './components/FilterBar';
 import { KanbanBoard } from './components/KanbanBoard';
 import { NewTaskModal } from './components/NewTaskModal';
+import { ExportCsvModal } from './components/ExportCsvModal';
 import { Column } from './types/kanban';
 
 const columns: Column[] = [
@@ -16,9 +18,11 @@ const columns: Column[] = [
 ];
 
 export default function App() {
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const {
     filteredTasks,
     allTags,
+    tasks,
     searchQuery,
     selectedTags,
     isModalOpen,
@@ -39,6 +43,7 @@ export default function App() {
         selectedTags={selectedTags}
         onToggleTag={toggleTagFilter}
         onClearFilters={clearFilters}
+        onExportCsvClick={() => setIsExportModalOpen(true)}
         onNewTaskClick={() => setModalOpen(true)}
       />
       <main className="flex-1 overflow-hidden">
@@ -52,6 +57,12 @@ export default function App() {
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
         onSave={addTask}
+      />
+      <ExportCsvModal
+        isOpen={isExportModalOpen}
+        onClose={() => setIsExportModalOpen(false)}
+        tasks={tasks}
+        filteredTasks={filteredTasks}
       />
     </div>
   );
